@@ -1,17 +1,11 @@
-import openai
-from dotenv import load_dotenv
-import os
+import ollama
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Access the API key from the environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-def get_german_response(message: str) -> str:
-    response = openai.Completion.create(
-        engine="text-davinci-003",  # or GPT-4 if you have access
-        prompt=f"Translate and respond in German: {message}",
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
+def get_german_response(user_input: str) -> str:
+    try:
+        response = ollama.chat(
+            model="llama3",  # Change model if needed
+            messages=[{"role": "user", "content": user_input}]
+        )
+        return response["message"]["content"]
+    except Exception as e:
+        return str(e)
